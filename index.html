@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lost & Found</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f2f5f9;
+    padding:25px;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:25px;
+    font-size:35px;
+}
+
+.form-box{
+    max-width:500px;
+    margin:auto;
+    background:white;
+    padding:25px;
+    border-radius:18px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+
+input, textarea{
+    width:100%;
+    padding:12px;
+    margin-top:12px;
+    border-radius:10px;
+    border:1px solid #ccc;
+    font-size:15px;
+}
+
+input[type="file"]{
+    background:white;
+}
+
+button{
+    padding:10px 16px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    margin-top:12px;
+    font-weight:bold;
+    font-size:15px;
+}
+
+.add-btn{
+    background:#0d6efd;
+    color:white;
+    width:100%;
+}
+
+.comment-btn{
+    background:#198754;
+    color:white;
+    width:100%;
+}
+
+.delete-btn{
+    background:red;
+    color:white;
+    width:100%;
+}
+
+.items{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:20px;
+    margin-top:35px;
+}
+
+.card{
+    width:320px;
+    background:white;
+    padding:15px;
+    border-radius:18px;
+    text-align:center;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+
+.card img{
+    width:100%;
+    height:220px;
+    object-fit:cover;
+    border-radius:12px;
+}
+
+.card h2{
+    margin-top:10px;
+}
+
+.card p{
+    margin-top:8px;
+}
+
+.userName,
+.commentBox{
+    width:100%;
+    margin-top:10px;
+    padding:10px;
+    border-radius:10px;
+}
+
+.comments{
+    text-align:left;
+    margin-top:10px;
+}
+
+.comments p{
+    background:#f1f1f1;
+    padding:8px;
+    border-radius:8px;
+    margin-top:6px;
+    word-wrap:break-word;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Lost & Found</h1>
+
+<div class="form-box">
+
+    <!-- USERNAME COLUMN ADDED -->
+    <input type="text" id="username" placeholder="Your Name">
+
+    <input type="text" id="name" placeholder="Item Name">
+
+    <input type="text" id="contact" placeholder="Contact Number">
+
+    <input type="file" id="imageFile" accept="image/*">
+
+    <textarea id="desc" placeholder="Description"></textarea>
+
+    <button class="add-btn" onclick="addItem()">Add Item</button>
+
+</div>
+
+<div class="items" id="itemsContainer"></div>
+
+<script>
+
+function addItem(){
+
+    // USERNAME VALUE ADDED
+    let username = document.getElementById("username").value;
+
+    let name = document.getElementById("name").value;
+    let contact = document.getElementById("contact").value;
+    let desc = document.getElementById("desc").value;
+    let file = document.getElementById("imageFile").files[0];
+
+    // USERNAME VALIDATION ADDED
+    if(username==="" || name==="" || contact==="" || desc==="" || !file){
+        alert("Fill all details");
+        return;
+    }
+
+    let reader = new FileReader();
+
+    reader.onload = function(e){
+
+        let card = document.createElement("div");
+        card.className = "card";
+
+        card.innerHTML = `
+            <img src="${e.target.result}">
+
+            <!-- USERNAME SHOWING -->
+            <p><b>Posted By:</b> ${username}</p>
+
+            <h2>${name}</h2>
+
+            <p><b>Contact:</b> ${contact}</p>
+
+            <p>${desc}</p>
+
+            <input type="text" class="userName" placeholder="Your Name">
+
+            <textarea class="commentBox" placeholder="Add comment..."></textarea>
+
+            <button class="comment-btn" onclick="addComment(this)">
+                Add Comment
+            </button>
+
+            <div class="comments"></div>
+
+            <button class="delete-btn" onclick="deleteItem(this)">
+                Delete Item
+            </button>
+        `;
+
+        document.getElementById("itemsContainer").appendChild(card);
+
+        // CLEAR INPUTS
+        document.getElementById("username").value = "";
+        document.getElementById("name").value = "";
+        document.getElementById("contact").value = "";
+        document.getElementById("desc").value = "";
+        document.getElementById("imageFile").value = "";
+    }
+
+    reader.readAsDataURL(file);
+}
+
+function addComment(button){
+
+    let card = button.parentElement;
+
+    let userName = card.querySelector(".userName").value;
+
+    let commentText = card.querySelector(".commentBox").value;
+
+    if(userName==="" || commentText===""){
+        alert("Enter name and comment");
+        return;
+    }
+
+    let comment = document.createElement("p");
+
+    comment.innerHTML = "<b>" + userName + ":</b> 💬 " + commentText;
+
+    card.querySelector(".comments").appendChild(comment);
+
+    card.querySelector(".userName").value = "";
+    card.querySelector(".commentBox").value = "";
+}
+
+function deleteItem(button){
+    button.parentElement.remove();
+}
+
+</script>
+
+</body>
+</html>
